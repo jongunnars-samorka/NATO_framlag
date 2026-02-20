@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NATO spending scenario (Iceland)</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; line-height: 1.35; }
+    .card { max-width: 720px; padding: 18px; border: 1px solid #ddd; border-radius: 12px; }
+    .row { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid #eee; }
+    .row:last-child { border-bottom: 0; }
+    .label { color: #444; }
+    .value { font-variant-numeric: tabular-nums; }
+    .muted { color: #666; font-size: 14px; }
+    input[type="range"] { width: 100%; }
+    .big { font-size: 20px; font-weight: 700; }
+    .pill { display:inline-block; padding:2px 10px; border-radius:999px; background:#f3f3f3; font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2 style="margin:0 0 6px 0;">Iceland NATO spending scenario</h2>
+    <div class="muted" style="margin-bottom:14px;">
+      Only change the slider. Everything else recalculates automatically.
+    </div>
+
+    <div style="margin: 10px 0 12px 0;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+        <div class="label">Current spending (% of GDP)</div>
+        <div class="pill"><span id="pctLabel">0.23</span>%</div>
+      </div>
+      <input id="pct" type="range" min="0" max="1" value="0.23" step="0.01" />
+      <div class="muted">Range: 0.00% – 1.00%</div>
+    </div>
+
+    <div class="row">
+      <div class="label">GDP (ISK)</div>
+      <div class="value" id="gdp"></div>
+    </div>
+    <div class="row">
+      <div class="label">Target (% of GDP)</div>
+      <div class="value">1.50%</div>
+    </div>
+
+    <div class="row">
+      <div class="label">Current spending (ISK)</div>
+      <div class="value" id="current"></div>
+    </div>
+    <div class="row">
+      <div class="label">Target spending (ISK)</div>
+      <div class="value" id="target"></div>
+    </div>
+
+    <div class="row">
+      <div class="label big">Difference (ISK)</div>
+      <div class="value big" id="diff"></div>
+    </div>
+
+    <div class="muted" style="margin-top:12px;">
+      Notes: uses GDP fixed at 4,616,000,000,000,000 ISK and target fixed at 1.5%.
+    </div>
+  </div>
+
+<script>
+  // Fixed inputs (only slider changes)
+  const GDP_ISK = 4616000000000000; // 4,616,000,000,000,000
+  const TARGET_PCT = 1.5;           // 1.5%
+
+  const fmtISK = new Intl.NumberFormat('is-IS', { maximumFractionDigits: 0 });
+  const fmtPct = (x) => Number(x).toFixed(2);
+
+  const elPct = document.getElementById('pct');
+  const elPctLabel = document.getElementById('pctLabel');
+  const elGdp = document.getElementById('gdp');
+  const elCurrent = document.getElementById('current');
+  const elTarget = document.getElementById('target');
+  const elDiff = document.getElementById('diff');
+
+  function recalc() {
+    const currentPct = Number(elPct.value);   // 0..1 (%)
+    elPctLabel.textContent = fmtPct(currentPct);
+
+    const currentISK = GDP_ISK * (currentPct / 100);
+    const targetISK  = GDP_ISK * (TARGET_PCT / 100);
+    const diffISK    = targetISK - currentISK;
+
+    elGdp.textContent     = fmtISK.format(GDP_ISK);
+    elCurrent.textContent = fmtISK.format(currentISK);
+    elTarget.textContent  = fmtISK.format(targetISK);
+    elDiff.textContent    = fmtISK.format(diffISK);
+  }
+
+  elPct.addEventListener('input', recalc);
+  recalc();
+</script>
+</body>
+</html>
