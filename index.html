@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="is">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sviðsmynd – Framlög Íslands til NATO</title>
+
+<style>
+:root {
+  --samorka-dark: #0A4B66;
+  --samorka-green: #00C48C;
+  --samorka-teal: #00A3A8;
+  --samorka-light: #F5F7F7;
+}
+
+body {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: var(--samorka-light);
+  margin: 0;
+  padding: 40px 20px;
+  color: var(--samorka-dark);
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: white;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.header img {
+  height: 60px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 28px;
+  color: var(--samorka-dark);
+}
+
+.subtitle {
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.slider-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--samorka-green);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.big {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--samorka-teal);
+}
+
+.note {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #666;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="header">
+    <!-- Put logo file in same folder -->
+    <img src="samorka-logo.png" alt="Samorka merki">
+    <div>
+      <h1>Sviðsmynd – Framlög Íslands til NATO</h1>
+    </div>
+  </div>
+
+  <div class="subtitle">
+    Dragðu sleðann til að breyta núverandi hlutfalli. Allar upphæðir uppfærast sjálfkrafa.
+  </div>
+
+  <div class="slider-label">
+    <span>Núverandi hlutfall af VLF (%)</span>
+    <span><strong><span id="pctLabel">0.23</span>%</strong></span>
+  </div>
+
+  <input id="pct" type="range" min="0" max="1" step="0.01" value="0.23">
+
+  <div class="row">
+    <span>Verg landsframleiðsla 2024 (ISK)</span>
+    <span id="gdp"></span>
+  </div>
+
+  <div class="row">
+    <span>Markmið (% af VLF)</span>
+    <span>1.50%</span>
+  </div>
+
+  <div class="row">
+    <span>Núverandi framlög (ISK)</span>
+    <span id="current"></span>
+  </div>
+
+  <div class="row">
+    <span>Framlög samkvæmt markmiði (ISK)</span>
+    <span id="target"></span>
+  </div>
+
+  <div class="row big">
+    <span>Mismunur (ISK)</span>
+    <span id="diff"></span>
+  </div>
+
+  <div class="note">
+    Forsendur: VLF 2024 4.616.000.000.000.000 ISK og markmið 1,5%.
+  </div>
+
+</div>
+
+<script>
+const GDP_ISK = 4616000000000000;
+const TARGET_PCT = 1.5;
+
+const fmtISK = new Intl.NumberFormat('is-IS', { maximumFractionDigits: 0 });
+const fmtPct = x => Number(x).toFixed(2);
+
+const elPct = document.getElementById('pct');
+const elPctLabel = document.getElementById('pctLabel');
+const elGdp = document.getElementById('gdp');
+const elCurrent = document.getElementById('current');
+const elTarget = document.getElementById('target');
+const elDiff = document.getElementById('diff');
+
+function recalc() {
+  const currentPct = Number(elPct.value);
+  elPctLabel.textContent = fmtPct(currentPct);
+
+  const currentISK = GDP_ISK * (currentPct / 100);
+  const targetISK  = GDP_ISK * (TARGET_PCT / 100);
+  const diffISK    = targetISK - currentISK;
+
+  elGdp.textContent = fmtISK.format(GDP_ISK);
+  elCurrent.textContent = fmtISK.format(currentISK);
+  elTarget.textContent = fmtISK.format(targetISK);
+  elDiff.textContent = fmtISK.format(diffISK);
+}
+
+elPct.addEventListener('input', recalc);
+recalc();
+</script>
+
+</body>
+</html>
